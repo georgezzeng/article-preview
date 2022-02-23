@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="robots" content="noindex">
+    <link href="{{ '/style.css' | relative_url }}" media="screen, tv, projection" title="Default" rel="stylesheet">
+</head>
+    <main>
+        <div class="container-xxl py-4">
+            <div id="news-container" class="row justify-content-center">
+                <div class="col-12 col-lg-10 col-xl-9 col-xxl-8">
+                    <h1>{{ page.title }}</h1>
+                    <div class="row justify-content-between">
+                        {% if page.author %}
+                        <div class="col-auto">
+                            <span class="fs-4 text-muted">{{ page.author}}</span>
+                        </div>
+                        {% endif %}
+                        <div class="col-auto">
+                            <span class="fs-4 text-muted">{{ page.date | date: "%B %e, %Y"}}</span>
+                        </div>
+                    </div>
+
+                    {% if page.link %}
+                    <a href="{{ page.link }}">Associated Link</a>
+                    {% endif %}
+                    <div class="mt-4 fs-5">{{ content }}</div>
+                </div>
+            </div>`
+        </div>
+    </main>
+</html>
