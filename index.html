@@ -4,7 +4,7 @@ layout: default
 <ul>
     {% for article in site.posts %}
     <li>
-        <h2><a href="{{ article.url }}">{{ article.title }}</a></h2>
+        <h2><a href="{{ article.url }}">{{ article.title | relative_url }}</a></h2>
     </li>
     {% endfor %}
 </ul>
