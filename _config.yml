@@ -1,4 +1,4 @@
-baseurl: "article-preview"
+baseurl: "/article-preview"
 title: Your awesome title
 email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
@@ -21,3 +21,8 @@ defaults:
       path: ""
     values:
       layout: "default"
+  -
+    scope:
+      type: "posts"
+    values:
+      layout: "posts"
