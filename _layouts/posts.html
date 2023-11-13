@@ -34,8 +34,8 @@ layout: default
         <div class="col-12 col-md-6 col-xxl-4 py-4">
             <a href="{{ page.url | relative_url }}">
                 <div class="card h-100">
-                    {% if page.card_src %}
-                    <img alt="{{ page.card_alt }}" src="{{ page.card_src | relative_url }}" class="card-img-top">
+                    {% if page.image.path %}
+                    <img alt="{{ page.image.alt }}" src="{{ page.image.path | relative_url }}" class="card-img-top">
                     {% endif %}
                     <div class="card-body border-top">
                         <h3><a class="text-decoration-none" href="{{ page.url | relative_url }}">{{ page.title }}</a></h3>
