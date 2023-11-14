@@ -35,7 +35,7 @@ layout: default
             <a href="{{ page.url | relative_url }}">
                 <div class="card h-100">
                     {% if page.image.path %}
-                    <img alt="{{ page.image.alt }}" src="{{ page.image.path | relative_url }}" class="card-img-top">
+                    <img alt="{{ page.image.alt }}" src="{{ page.image.path }}" class="card-img-top">
                     {% endif %}
                     <div class="card-body border-top">
                         <h3><a class="text-decoration-none" href="{{ page.url | relative_url }}">{{ page.title }}</a></h3>
