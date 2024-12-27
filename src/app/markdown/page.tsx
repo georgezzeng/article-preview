@@ -6,7 +6,6 @@ import {useEffect, useState} from "react";
 import {useSearchParams} from "next/navigation";
 import Article from "@/app/components/Article";
 import { motion } from "motion/react"
-import articleTemplate from "../template/articleTemplate"
 import Divider from '@mui/material/Divider';
 
 
@@ -15,7 +14,6 @@ export default function MarkdownPage() {
     const searchParams = useSearchParams();
     const [frontmatter, setFrontmatter] = useState<any | null>({title: "", author: "", banner_src: "", banner_alt: ""});
     const [content, setContent] = useState<string>("");
-    const [rawMarkdown, setRawMarkdown] = useState<string | null>(articleTemplate);
     
     useEffect(()=>{
         const fetchMarkdown = async () => {
@@ -35,7 +33,6 @@ export default function MarkdownPage() {
                 throw Error ("Failed to fetch markdown");
             }
             const markdown = await response.text()
-            setRawMarkdown(markdown);
             console.log(markdown);
 
             const {data: frontmatter, content} = grayMatter(markdown);
@@ -54,7 +51,7 @@ export default function MarkdownPage() {
                 if (Array.isArray(value)) {
                     return `${key}:\n  - ${value.join("\n  - ")}`;
                 }
-                if (typeof value === "object") {
+                if (typeof value === "object" && value !== null) {
                     return `${key}:\n${Object.entries(value)
                         .map(([subKey, subValue]) => `  ${subKey}: ${subValue}`)
                         .join("\n")}`;
@@ -82,7 +79,7 @@ export default function MarkdownPage() {
                             fontFamily: "monospace",
                             fontSize: "14px",
                         }}>
-                        {formatFrontmatter(frontmatter)}
+                        { formatFrontmatter(frontmatter) }
                     </Box>
                 </Box>
                 <Divider sx={{my: '20px'}}/>
