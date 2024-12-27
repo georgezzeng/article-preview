@@ -51,7 +51,7 @@ export default function Article({ content }: ArticleProps) {
                             src={src || ""}
                             alt={alt || ""}
                             style={{ maxWidth: "100%", height: "auto", margin: "1rem 0" }}
-                            whileHover={{ scale: 1.2 }}
+                            whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         />
                     ),
