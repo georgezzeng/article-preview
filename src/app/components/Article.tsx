@@ -29,7 +29,7 @@ export default function Article({ content }: ArticleProps) {
                         </Typography>
                     ),
                     p: ({ children }) => (
-                        <Typography variant="body1" paragraph>
+                        <Typography variant="body1">
                             {children}
                         </Typography>
                     ),
@@ -57,7 +57,7 @@ export default function Article({ content }: ArticleProps) {
                             href={href || ""}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ color: "#007bff", textDecoration: "none" }}
+                            style={{ color: "darkorange", textDecoration: "underline"}}
                         >
                             {children}
                         </a>
