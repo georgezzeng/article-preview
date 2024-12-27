@@ -2,6 +2,7 @@ import React from "react";
 import Markdown from "react-markdown";
 import { Box, Typography } from "@mui/material";
 import rehypeRaw from "rehype-raw";
+import { motion } from "framer-motion";
 
 interface ArticleProps {
     content: string;
@@ -29,7 +30,7 @@ export default function Article({ content }: ArticleProps) {
                         </Typography>
                     ),
                     p: ({ children }) => (
-                        <Typography variant="body1">
+                        <Typography variant="body1" sx={{ mb: 2 }}>
                             {children}
                         </Typography>
                     ),
@@ -46,10 +47,12 @@ export default function Article({ content }: ArticleProps) {
                         </Box>
                     ),
                     img: ({ src, alt }) => (
-                        <img
+                        <motion.img
                             src={src || ""}
                             alt={alt || ""}
                             style={{ maxWidth: "100%", height: "auto", margin: "1rem 0" }}
+                            whileHover={{ scale: 1.2 }}
+                            whileTap={{ scale: 0.95 }}
                         />
                     ),
                     a: ({ href, children }) => (
@@ -57,7 +60,7 @@ export default function Article({ content }: ArticleProps) {
                             href={href || ""}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ color: "darkorange", textDecoration: "underline"}}
+                            style={{ color: "darkorange", textDecoration: "underline" }}
                         >
                             {children}
                         </a>
