@@ -1,89 +1,41 @@
 import React from "react";
 import Markdown from "react-markdown";
-import { Box, Typography } from "@mui/material";
+import {Box, Container, Typography} from "@mui/material";
 import rehypeRaw from "rehype-raw";
-import { motion } from "framer-motion";
+import Balancer from "react-wrap-balancer";
+import {Frontmatter} from "@/app/page";
 
-interface ArticleProps {
-    content: string;
-}
-
-export default function Article({ content }: ArticleProps) {
+export const Article: React.FC<{ frontmatter: Frontmatter; content: string }> = ({frontmatter, content}) => {
     return (
-        <Box>
-            <Markdown
-                rehypePlugins={[rehypeRaw]}
-                components={{
-                    h1: ({ children }) => (
-                        <Typography variant="h4" gutterBottom>
-                            {children}
-                        </Typography>
-                    ),
-                    h2: ({ children }) => (
-                        <Typography variant="h5" gutterBottom>
-                            {children}
-                        </Typography>
-                    ),
-                    h3: ({ children }) => (
-                        <Typography variant="h6" gutterBottom>
-                            {children}
-                        </Typography>
-                    ),
-                    p: ({ children }) => (
-                        <Typography variant="body1" sx={{ mb: 2 }}>
-                            {children}
-                        </Typography>
-                    ),
-                    blockquote: ({ children }) => (
-                        <Box
-                            sx={{
-                                pl: 2,
-                                borderLeft: "4px solid #ddd",
-                                fontStyle: "italic",
-                                my: 2,
-                            }}
-                        >
-                            <Typography variant="body1">{children}</Typography>
-                        </Box>
-                    ),
-                    img: ({ src, alt }) => (
-                        <motion.img
-                            src={src || ""}
-                            alt={alt || ""}
-                            style={{ maxWidth: "100%", height: "auto", margin: "1rem 0" }}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        />
-                    ),
-                    a: ({ href, children }) => (
-                        <a
-                            href={href || ""}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: "darkorange", textDecoration: "underline" }}
-                        >
-                            {children}
-                        </a>
-                    ),
-                    ul: ({ children }) => (
-                        <Box component="ul" sx={{ pl: 3 }}>
-                            {children}
-                        </Box>
-                    ),
-                    ol: ({ children }) => (
-                        <Box component="ol" sx={{ pl: 3 }}>
-                            {children}
-                        </Box>
-                    ),
-                    li: ({ children }) => (
-                        <li>
-                            <Typography variant="body1">{children}</Typography>
-                        </li>
-                    ),
-                }}
-            >
-                {content}
-            </Markdown>
-        </Box>
-    );
+        <Container maxWidth={"md"}>
+            <Box>
+                <Box textAlign={"center"} pb={2}>
+                    <Box pb={6}>
+                        <Typography variant={"h3"} ><Balancer>{frontmatter.title}</Balancer></Typography>
+                    </Box>
+                    <Box height={"1rem"} borderRadius={"10px"} bgcolor={"primary.main"}></Box>
+                    <Box pt={1} display={"flex"} justifyContent={"space-between"}>
+                        <Typography variant={"h5"}>{frontmatter.author}</Typography>
+                        {/*<Typography variant={"h5"}>{frontmatter.date ? frontmatter.date.toLocaleDateString() : "Unknown Date"}</Typography>*/}
+                    </Box>
+                </Box>
+                <Markdown
+                    rehypePlugins={[rehypeRaw]}
+                    components={{
+                        h1: ({node, children}) => <Typography variant={"h1"}>{children}</Typography>,
+                        h2: ({node, children}) => <Typography variant={"h1"}>{children}</Typography>,
+                        h3: ({node, children}) => <Typography variant={"h1"}>{children}</Typography>,
+                        h4: ({node, children}) => <Typography variant={"h1"}>{children}</Typography>,
+                        h5: ({node, children}) => <Typography variant={"h1"}>{children}</Typography>,
+                        h6: ({node, children}) => <Typography variant={"h1"}>{children}</Typography>,
+                        p: ({node, children}) => <Typography variant={"body1"}>{children}</Typography>,
+                        a: ({children, href}) => <a style={{color: "#0885ff"}} href={href}>{children}</a>,
+                        img: ({node, src, alt}) => <img style={{maxWidth: "100%", height: "auto"}} src={src} alt={alt} />,
+                    }}
+                >
+                    {content}
+                </Markdown>
+            </Box>
+        </Container>
+    )
 }
