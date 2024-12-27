@@ -2,9 +2,9 @@
 
 import {Box, Container} from "@mui/material";
 import grayMatter from "gray-matter";
-import Markdown from "react-markdown";
 import {useEffect, useState} from "react";
 import {useSearchParams} from "next/navigation";
+import Article from "@/app/components/Article";
 
 export default function MarkdownPage() {
     const searchParams = useSearchParams();
@@ -54,7 +54,7 @@ export default function MarkdownPage() {
             )}
 
             <Box>
-                <Markdown>{content}</Markdown>
+                <Article content={content} />
             </Box>
 
         </Container>
