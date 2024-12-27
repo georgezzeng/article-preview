@@ -28,18 +28,18 @@ export default function MarkdownPage() {
             }
 
             const response = await fetch(markdownUrl);
-            console.log(response);
+            // console.log(response);
             if(!response.ok) {
                 throw Error ("Failed to fetch markdown");
             }
             const markdown = await response.text()
-            console.log(markdown);
+            // console.log(markdown);
 
             const {data: frontmatter, content} = grayMatter(markdown);
             setFrontmatter(frontmatter);
             setContent(content);
-            console.log(frontmatter);
-            console.log(content);
+            // console.log(frontmatter);
+            // console.log(content);
         }
         fetchMarkdown();
     }, [searchParams]);
@@ -94,7 +94,7 @@ export default function MarkdownPage() {
                             src={frontmatter.banner_src}
                             alt={frontmatter.banner_alt || "Banner"}
                             style={{width: "100%", aspectRatio: "2/1"}}
-                            whileHover={{ scale: 1.05 }}
+                            whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.95 }}
                         />
                     </Box>
