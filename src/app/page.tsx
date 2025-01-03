@@ -1,84 +1,81 @@
 'use client'
 
-import {Box, Chip, Container, Typography} from "@mui/material";
+import {Box, Button, Chip, Container, TextField} from "@mui/material";
 import grayMatter from "gray-matter";
 import React, {useEffect, useState} from "react";
 import {useSearchParams} from "next/navigation";
-import {Article} from "@/app/components/Article";
 import {motion} from "motion/react"
 import Divider from '@mui/material/Divider';
-import {ArticleCard} from "@/app/components/ArticleCard";
-
-export interface Frontmatter {
-    title: string;
-    author: string;
-    publish_on: string[];
-    type: string;
-    canonical_url: string;
-    image: string | null;
-    path: string;
-    alt: string;
-    description: string;
-    excerpt: string;
-    card_src: string;
-    card_alt: string;
-    banner_src: string;
-    banner_alt: string;
-}
-
+import {ArticleCard, Article} from "@chtc/web-components"
+import {Grid2 as Grid} from "@mui/material";
 
 export default function MarkdownPage() {
+
     const searchParams = useSearchParams();
-    const [frontmatter, setFrontmatter] = useState<Frontmatter>({
-        title: "", author: "", publish_on: [], type: "", canonical_url: "", image: null, path: "", alt: "", description: "", excerpt: "", card_src: "", card_alt: "", banner_src: "", banner_alt: ""});
-    const [content, setContent] = useState<string>("");
+    const markdownUrl = searchParams.get("url");
+
+    const [article, setArticle] = useState<any | null>(null);
+
+    const [error, setError] = useState<string | undefined>(undefined);
 
     useEffect(() => {
-        const fetchMarkdown = async () => {
+      (async () => {
+
             const markdownUrl = searchParams.get("url");
 
             if (!markdownUrl) {
-                return (
-                    <Container>
-                        <h1 style={{position: "absolute", top: '50%', left: '50%'}}>No Url Provided</h1>
-                    </Container>
-                )
+              setError("No URL provided");
+              return
             }
 
-            const response = await fetch(markdownUrl);
-            // console.log(response);
-            if (!response.ok) {
-                throw Error("Failed to fetch markdown");
+            let response;
+            try {
+              response = await fetch(markdownUrl);
+              if (!response.ok) {
+                setError(`Failed to fetch markdown: ${response.statusText}`);
+                return
+              }
+            } catch (e) {
+              setError(`Failed to fetch markdown: ${e}`);
+              return
             }
+
             const markdown = await response.text()
-            // console.log(markdown);
 
             const { data, content } = grayMatter(markdown);
-            setFrontmatter(data as Frontmatter);
-            setContent(content);
-            // console.log(frontmatter);
-            // console.log(content);
-        }
-        fetchMarkdown();
-    }, [searchParams]);
 
-    const formatFrontmatter = (data: any) => {
-        if (!data) return "";
-        return Object.entries(data)
-            .map(([key, value]) => {
-                if (Array.isArray(value)) {
-                    return `${key}:\n  - ${value.join("\n  - ")}`;
-                }
-                if (typeof value === "object" && value !== null) {
-                    return `${key}:\n${Object.entries(value)
-                        .map(([subKey, subValue]) => `  ${subKey}: ${subValue}`)
-                        .join("\n")}`;
-                }
-                return `${key}: ${value}`;
-            })
-            .join("\n");
-    }
+            const path = markdownUrl.split("/").slice(-1)[0];
+            const date = new Date(path.split("-").slice(0, 3).join("-"));
 
+            const article = {
+              slug: [],
+              date: date,
+              path: markdownUrl.split("/").slice(-1)[0],
+              content,
+              ...data
+            }
+
+            setArticle(article)
+            setError(undefined)
+        })();
+    }, [markdownUrl, searchParams]);
+
+  if (error) {
+    return (
+        <Container>
+          <h1>{error}</h1>
+          <TextField onChange={(e) => updateUrl(e.target.value)} label="Enter URL" fullWidth/>
+        </Container>
+    )
+  }
+
+  if (!article) {
+    return (
+        <Container>
+          <h1>Loading</h1>
+        </Container>
+    )
+  }
 
     return (
         <Container>
@@ -99,7 +96,7 @@ export default function MarkdownPage() {
                         fontFamily: "monospace",
                         fontSize: "14px",
                     }}>
-                    {formatFrontmatter(frontmatter)}
+                    {article ? formatFrontmatter(article) : "No frontmatter"}
                 </Box>
 
 
@@ -109,7 +106,7 @@ export default function MarkdownPage() {
                 <Chip label="Article Preview" size="medium" sx={{ fontSize: "1.2rem", padding: "8px 16px" }}/>
             </Divider>
             <Box>
-                <Article frontmatter={frontmatter} content={content}/>
+                <Article article={article}/>
             </Box>
 
             <Divider variant="middle"
@@ -117,20 +114,22 @@ export default function MarkdownPage() {
                          marginRight: "0"}}>
                 <Chip label="Card Preview" size="medium" sx={{ fontSize: "1.2rem", padding: "8px 16px" }}/>
             </Divider>
-            <Box>
-                <ArticleCard frontmatter={frontmatter} content={content}/>
-            </Box>
+            <Grid container justifyContent={'center'}>
+              <Grid size={{xs: 12, md: 6, lg: 4}}>
+                <ArticleCard href={"./"} article={article}/>
+              </Grid>
+            </Grid>
 
             <Divider variant="middle"
                      sx={{backgroundColor: "black", width: "100%", height: "3px", my: '70px',marginLeft: "0",
                          marginRight: "0"}}>
                 <Chip label="Banner Preview" size="medium" sx={{ fontSize: "1.2rem", padding: "8px 16px" }}/>
             </Divider>
-            {frontmatter.banner_src ? (
+            {article.banner_src ? (
                 <Box>
                     <motion.img
-                        src={frontmatter.banner_src}
-                        alt={frontmatter.banner_alt || "Banner"}
+                        src={article.banner_src}
+                        alt={article.banner_alt || "Banner"}
                         style={{width: "100%", aspectRatio: "2/1"}}
                         whileHover={{scale: 1.02}}
                         whileTap={{scale: 0.95}}
@@ -141,4 +140,19 @@ export default function MarkdownPage() {
 
         </Container>
     )
+}
+
+const formatFrontmatter = (frontmatter: any) => {
+  const newFrontmatter = {...frontmatter};
+  delete newFrontmatter.content;
+  delete newFrontmatter.slug;
+  delete newFrontmatter.path;
+  delete newFrontmatter.date;
+  return JSON.stringify(newFrontmatter, null, 2);
+}
+
+const updateUrl = (url: string) => {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.set('url', url);
+  window.history.pushState({}, '', currentUrl.toString());
 }
