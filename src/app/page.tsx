@@ -1,12 +1,13 @@
 'use client'
 
-import {Box, Button, Chip, Container, TextField} from "@mui/material";
+import {Box, Chip, Container, TextField} from "@mui/material";
 import grayMatter from "gray-matter";
 import React, {useEffect, useState} from "react";
 import {useSearchParams} from "next/navigation";
 import {motion} from "motion/react"
 import Divider from '@mui/material/Divider';
 import {ArticleCard, Article} from "@chtc/web-components"
+import {BackendArticle, Article as ArticleType} from "@chtc/web-components/dist/types";
 import {Grid2 as Grid} from "@mui/material";
 
 export default function MarkdownPage() {
@@ -14,7 +15,7 @@ export default function MarkdownPage() {
     const searchParams = useSearchParams();
     const markdownUrl = searchParams.get("url");
 
-    const [article, setArticle] = useState<any | null>(null);
+    const [article, setArticle] = useState<BackendArticle | null>(null);
 
     const [error, setError] = useState<string | undefined>(undefined);
 
@@ -52,10 +53,10 @@ export default function MarkdownPage() {
               date: date,
               path: markdownUrl.split("/").slice(-1)[0],
               content,
-              ...data
+              ...(data as Omit<ArticleType, "content" | "date">)
             }
 
-            setArticle(article)
+            setArticle(article as BackendArticle)
             setError(undefined)
         })();
     }, [markdownUrl, searchParams]);
@@ -142,8 +143,8 @@ export default function MarkdownPage() {
     )
 }
 
-const formatFrontmatter = (frontmatter: any) => {
-  const newFrontmatter = {...frontmatter};
+const formatFrontmatter = (frontmatter: BackendArticle) => {
+  const newFrontmatter: Partial<BackendArticle> = {...frontmatter};
   delete newFrontmatter.content;
   delete newFrontmatter.slug;
   delete newFrontmatter.path;
